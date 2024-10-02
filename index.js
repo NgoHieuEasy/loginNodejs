@@ -4,10 +4,13 @@ const { NewMessage } = require("telegram/events");
 const readline = require("readline");
 const input = require("input");
 const fs = require("fs");
-const apiId = 20437980;
-const apiHash = "cc68e8f362f82867f997cc670c048880";
-const phoneNumber = "+84862289117";
+
+// add account here
+const apiId = 0;
+const apiHash = "";
+const phoneNumber = "";
 const sessionFile = `${phoneNumber}.session`;
+
 const savedSession = async () => {
   const stringSession = new StringSession("");
 
@@ -91,5 +94,5 @@ const generateOTP = async () => {
 };
 
 (async () => {
-  savedSession();
+  generateOTP();
 })();
