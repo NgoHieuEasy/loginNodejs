@@ -9,9 +9,10 @@ const data = [
     apiId: 20437980,
     apiHash: "cc68e8f362f82867f997cc670c048880",
   },
+
   {
-    sdt: "+84382507792",
-    apiId: 23415111,
-    apiHash: "12f7ac0fc718d7afbef4deb99c42e39f",
+    sdt: "+84369330902",
+    apiId: 28559864,
+    apiHash: "027ca1837915199ca19bd137f1b3bf60",
   },
 ];

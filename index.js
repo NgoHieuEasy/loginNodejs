@@ -4,12 +4,10 @@ const { NewMessage } = require("telegram/events");
 const readline = require("readline");
 const input = require("input");
 const fs = require("fs");
-const apiId = 23415111;
-const apiHash = "12f7ac0fc718d7afbef4deb99c42e39f";
-const phoneNumber = "+84382507792";
-
-const sessionFile = "session.txt";
-
+const apiId = 20437980;
+const apiHash = "cc68e8f362f82867f997cc670c048880";
+const phoneNumber = "+84862289117";
+const sessionFile = `${phoneNumber}.session`;
 const savedSession = async () => {
   const stringSession = new StringSession("");
 
@@ -31,8 +29,15 @@ const savedSession = async () => {
 
     // Lưu session vào file session.txt
     const sessionString = client.session.save();
-    fs.writeFileSync(sessionFile, sessionString, "utf-8");
-    console.log(`Session đã được lưu vào ${sessionFile}`);
+
+    if (fs.existsSync(sessionFile)) {
+      const fileContent = fs.readFileSync(sessionFile, "utf-8");
+      logs = fileContent.split("\n").filter((line) => line);
+    }
+
+    fs.writeFileSync(`${phoneNumber}.session`, sessionString);
+
+    console.log(`Session đã lưu ${phoneNumber}.session`);
   } catch (error) {
     console.error("Đăng nhập thất bại:", error.message);
   }
@@ -41,9 +46,16 @@ const savedSession = async () => {
 };
 
 const generateOTP = async () => {
-  console.log("Starting generateOTP function...");
+  let token = "";
 
-  const token = fs.readFileSync(sessionFile, "utf-8");
+  if (fs.existsSync(sessionFile)) {
+    token = fs.readFileSync(sessionFile, "utf-8").trim(); // Sử dụng trim() để loại bỏ khoảng trắng
+    if (!token) {
+      console.log(`File ${sessionFile} tồn tại nhưng rỗng. Gán token là rỗng.`);
+      token = "";
+    }
+  }
+
   const stringSession = new StringSession(token);
   const client = new TelegramClient(stringSession, apiId, apiHash, {
     connectionRetries: 5,
@@ -58,17 +70,15 @@ const generateOTP = async () => {
       console.log("Bạn đã đăng nhập!");
 
       client.addEventHandler(async (update) => {
-        console.log("Received update:", update);
         const messageText = update?.message?.message;
         if (messageText) {
-          console.log("Received message:", messageText);
           const otpMatch = messageText.match(/\b(\d{5})\b/);
           if (otpMatch) {
             const otpCode = otpMatch[0];
             console.log(`Mã OTP của ${phoneNumber} là: ${otpCode}`);
           }
         }
-      }, new NewMessage({ fromUsers: 777000 })); // Không có điều kiện cụ thể
+      }, new NewMessage({ fromUsers: 777000 }));
 
       console.log("Lắng nghe tin nhắn...");
     }
@@ -76,10 +86,10 @@ const generateOTP = async () => {
     console.error("Lỗi trong quá trình đăng nhập:", error.message);
   } finally {
     // Đóng kết nối nếu cần
-    // await client.disconnect();
+    await client.disconnect();
   }
 };
 
 (async () => {
-  generateOTP();
+  savedSession();
 })();
