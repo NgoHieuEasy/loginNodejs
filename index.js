@@ -18,6 +18,10 @@ const savedSession = async () => {
     connectionRetries: 5,
   });
 
+  if (phoneNumber === "") {
+    console.log("phoneNumber được trống");
+    return;
+  }
   try {
     await client.connect();
     // Kết nối đến Telegram
@@ -60,6 +64,10 @@ const generateOTP = async () => {
   }
 
   const stringSession = new StringSession(token);
+  if (apiId === 0 || apiHash === "") {
+    console.log("apiId và apiHash không được trống");
+    return;
+  }
   const client = new TelegramClient(stringSession, apiId, apiHash, {
     connectionRetries: 5,
   });
